@@ -22,6 +22,8 @@ const { save,  updateUserStatus, isActive } = require('./controllers/messageCont
 
 const messageRoute = require('./routes/messageRoutes');
 app.use('/api/v1', messageRoute);
+const statusRoutes = require('./routes/statusRoutes');
+app.use('/api/v1/status', statusRoutes);
 
 app.get('/', async (req, res, next) => {
     //console.log(__dirname)
