@@ -1,4 +1,5 @@
 const Message = require('../models/Message');
+const LastMessage = require('../models/LastMessage');
 const UserStatus = require('../models/UserStatus');
 
 const save = async (data) => {
@@ -13,11 +14,50 @@ const save = async (data) => {
     try {
         const createdMessage = await message.save();
         console.log('createdMessage is: ', createdMessage);
+
+        // update last message
+        updateLastMessage(data);
         return createdMessage;
     } catch(error) {
         console.log(error);
         return null;
     }
+}
+
+const updateLastMessage = async (data) => {
+    const hashId = data.from < data.to 
+        ? data.from + '#' + data.to
+        : data.to + '#' + data.from;
+
+    const message = new LastMessage({
+        hashId: hashId, 
+        text: data.text,
+        from: data.from,
+        to: data.to,
+        time: data.time,
+        status: 'sent'
+    });
+
+    try {
+        const lastMessageList = await LastMessage.find({ hashId: hashId });
+        console.log('lastMessage', lastMessageList);
+        if (lastMessageList.length > 0) {
+            const lastMessage = lastMessageList[0];
+            lastMessage.text = data.text;
+            lastMessage.from = data.from;
+            lastMessage.to = data.to;
+            lastMessage.time = data.time;
+            //lastMessage.status = 
+            await lastMessage.save();
+            console.log('updated successfuly for hashId: ', hashId);
+        } else {
+            await message.save();// create new entry
+            console.log('created successfuly for hashId: ', hashId);
+        }
+    } catch(error) {
+        console.log(error);
+    }
+
 }
 
 const updateMessageStatus = async (messageId, status) => {

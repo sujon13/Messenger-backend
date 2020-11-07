@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 // common middlewire
-//app.use(express.json());
+app.use(express.json());
 //app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 //app.use(helmet());
@@ -21,7 +21,7 @@ const { save,  updateUserStatus, isActive } = require('./controllers/messageCont
 
 
 const messageRoute = require('./routes/messageRoutes');
-app.use('/api/v1/messages', messageRoute);
+app.use('/api/v1', messageRoute);
 
 app.get('/', async (req, res, next) => {
     //console.log(__dirname)
@@ -76,7 +76,8 @@ io.on('connection', (socket) => {
         const response = await isActive(data.to);
         console.log(response.isActive);
         if (response.isActive) {
-            socket.broadcast.to(data.to).emit('chat', data);
+            //socket.broadcast.to(data.to).emit('chat', data);
+            socket.broadcast.emit('chat', data);
         }
     });
 
