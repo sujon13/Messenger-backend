@@ -40,7 +40,7 @@ const updateLastMessage = async (data) => {
 
     try {
         const lastMessageList = await LastMessage.find({ hashId: hashId });
-        console.log('lastMessage', lastMessageList);
+        //console.log('lastMessage', lastMessageList);
         if (lastMessageList.length > 0) {
             const lastMessage = lastMessageList[0];
             lastMessage.text = data.text;
@@ -77,7 +77,7 @@ const getUser = async (email) => {
     try {
         const user = await UserStatus.find({userEmail: email});
         if (user.length > 0) {
-            console.log('user found');
+            //console.log('user found');
             return user[0];
         } else {
             const userStatus = await new UserStatus({
@@ -113,10 +113,10 @@ const isActive = async (email) => {
     try {
         console.log(email);
         const user = await UserStatus.find({userEmail: email});
-        console.log(user);
+        //console.log(user);
         if (user.length > 0) {
             const lastSeen = user[0].lastSeen;
-            console.log(Date.now(), lastSeen);
+            //console.log(Date.now(), lastSeen);
             const isActive = Date.now() - lastSeen <= 60*1000;
             return {
                 isActive: isActive,

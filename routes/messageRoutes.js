@@ -18,11 +18,9 @@ router.get('/messages', async (req, res) => {
             null,
             { sort: '-time', skip: skip, limit: 30}
         );
-        console.log('Before sort: ', messages);
         messages.sort(function(a, b) {
             return a.time.getTime() - b.time.getTime();
         });
-        console.log('After sort: ', messages);
         res.status(200).send(messages);
     } catch (error) {
         res.send([]);
@@ -36,12 +34,12 @@ router.get('/lastMessages', async (req, res) => {
     const userList = JSON.parse(req.query.userList);
     
     const hashIdList = userList.map((user) => {
-        console.log(owner.email, user.email);
+        //console.log(owner.email, user.email);
         return owner.email < user.email 
             ? owner.email + '#' + user.email 
             : user.email + '#' + owner.email;
     });
-    console.log('hashIdList: ', hashIdList);
+    //console.log('hashIdList: ', hashIdList);
 
     try {
         const messages = await LastMessage.find(
@@ -51,7 +49,7 @@ router.get('/lastMessages', async (req, res) => {
             null,
             { sort: '-time', skip: skip, limit: 30}
         );
-        console.log('last messages: ', messages);
+        //console.log('last messages: ', messages);
         res.status(200).send(messages);
     } catch (error) {
         res.send([]);
