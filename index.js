@@ -122,7 +122,7 @@ mongoose.connect(
 );
 
 require('dotenv/config');
-const PORT = 4001 || process.env.PORT;
+const PORT = process.env.PORT || 4001;
 server.listen(PORT, () => {
     console.log(`app listening at http://localhost:${PORT}`);
 });
