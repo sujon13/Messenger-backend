@@ -5,20 +5,8 @@ const socketio = require('socket.io');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const cors = require('cors');
-
-const whiteList = [
-    'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
-    'http://localhost',
-    'http://127.0.0.1'
-];
-
 const server = http.createServer(app);
-const io = socketio(server, {
-    cors: {
-        origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com',
-        credentials: true
-    }
-});
+const io = socketio(server);
 
 // common middlewire
 app.use(express.json());
@@ -26,6 +14,11 @@ app.use(express.json());
 //app.use(cookieParser());
 //app.use(helmet());
 
+const whiteList = [
+    'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
+    'http://localhost',
+    'http://127.0.0.1'
+];
 const corsOptions = {
     origin: whiteList
 };
