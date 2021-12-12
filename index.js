@@ -14,8 +14,20 @@ app.use(express.json());
 //app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 //app.use(helmet());
-app.use(cors());
-
+const whitelist = [
+    'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
+    'http://127.0.0.1'
+];
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+};
+app.use(cors(corsOptions));
 
 //local import
 const { save,  updateUserStatus, isActive } = require('./controllers/messageController');
@@ -34,7 +46,7 @@ app.get('/', async (req, res, next) => {
 const verifyToken = (token) => {
     console.log('token: ', token);
 
-    const decoded = verify(token, process.env.TOKEN_SECRET);
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
     if (decoded.isAccessToken === false) {
         console.log('access denied!');
         return 'Access Denied! Token is invalid';
