@@ -3,33 +3,32 @@ const app = express();
 const http = require('http');
 const socketio = require('socket.io');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const cors = require('cors');
 
+const whiteList = [
+    'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
+    'http://localhost',
+    "http://127.0.0.1"
+];
+
 const server = http.createServer(app);
-const io = socketio(server);
-require('dotenv').config();
+const io = socketio(server, {
+    cors: {
+      origin: whiteList
+    }
+});
 
 // common middlewire
 app.use(express.json());
 //app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 //app.use(helmet());
-const whitelist = [
-    'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
-    'http://localhost',
-    "http://127.0.0.1"
-];
+
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    }
+    origin: whiteList
 };
 app.use(cors(corsOptions));
-io.use(cors(corsOptions));
 
 //local import
 const { save,  updateUserStatus, isActive } = require('./controllers/messageController');
