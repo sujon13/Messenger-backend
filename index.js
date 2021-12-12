@@ -6,7 +6,11 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const cors = require('cors');
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server, {
+    cors: {
+        origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com'
+    }
+});
 
 // common middlewire
 app.use(express.json());
