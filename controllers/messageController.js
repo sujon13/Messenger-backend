@@ -24,37 +24,33 @@ const save = async (data) => {
     }
 }
 
-const updateLastMessage = async (data) => {
-    const createMessage = (data) => {
-        const hashId = data.from < data.to 
-        ? data.from + '#' + data.to
-        : data.to + '#' + data.from;
-
-        return new LastMessage({
-            hashId: hashId, 
-            text: data.text,
-            from: data.from,
-            to: data.to,
-            time: Date.now(),
-            status: 'sent'
-        });
-    }
+const updateLastMessage = async (message) => {
+    const hashId = message.from < message.to 
+        ? message.from + '#' + message.to
+        : message.to + '#' + message.from;
     
     try {
         const lastMessageList = await LastMessage.find({ hashId: hashId });
         //console.log('lastMessage', lastMessageList);
         if (lastMessageList.length > 0) {
             const lastMessage = lastMessageList[0];
-            lastMessage.text = data.text;
-            lastMessage.from = data.from;
-            lastMessage.to = data.to;
-            lastMessage.time = data.time;
+            lastMessage.text = message.text;
+            lastMessage.from = message.from;
+            lastMessage.to = message.to;
+            lastMessage.time = message.time;
             //lastMessage.status = 
             await lastMessage.save();
             console.log('updated successfuly for hashId: ', hashId);
         } else {
-            const message = createMessage(data);
-            await message.save();// create new entry
+            const newMessage = new LastMessage({
+                hashId: hashId, 
+                text: message.text,
+                from: message.from,
+                to: message.to,
+                time: message.time,
+                status: message.status
+            });
+            await newMessage.save();// create new entry
             console.log('created successfuly for hashId: ', hashId);
         }
     } catch(error) {

@@ -8,7 +8,11 @@ const cors = require('cors');
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-        origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com',
+        origin: [
+            'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com',
+            'http://localhost:3000',
+            'http://127.0.0.1:3000'
+        ],
         credentials: true
     }
 });
