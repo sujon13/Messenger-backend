@@ -16,7 +16,7 @@ app.use(express.json());
 //app.use(helmet());
 const whitelist = [
     'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
-    'http://localhost.com',
+    'http://localhost',
     "http://127.0.0.1"
 ];
 const corsOptions = {
@@ -29,6 +29,7 @@ const corsOptions = {
     }
 };
 app.use(cors(corsOptions));
+io.use(cors(corsOptions));
 
 //local import
 const { save,  updateUserStatus, isActive } = require('./controllers/messageController');
