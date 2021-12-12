@@ -16,7 +16,8 @@ app.use(express.json());
 //app.use(helmet());
 const whitelist = [
     'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
-    'http://127.0.0.1'
+    'http://localhost.com',
+    "http://127.0.0.1"
 ];
 const corsOptions = {
     origin: function (origin, callback) {
