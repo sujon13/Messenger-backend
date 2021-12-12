@@ -9,13 +9,13 @@ const cors = require('cors');
 const whiteList = [
     'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com', 
     'http://localhost',
-    "http://127.0.0.1"
+    'http://127.0.0.1'
 ];
 
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-      origin: whiteList
+      origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com'
     }
 });
 
