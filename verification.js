@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const createError = require('http-errors');
+import { verify } from 'jsonwebtoken';
+import createError from 'http-errors';
 
 const verifyToken = async (socket, next) => {
     const authHeader = socket.handshake.query['Authorization'];
@@ -13,7 +13,7 @@ const verifyToken = async (socket, next) => {
     }
 
     //verify a token symmetric
-    jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
+    verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
         if (err) {
             //return next(createError(401, err));
             console.log(err);
@@ -30,4 +30,5 @@ const verifyToken = async (socket, next) => {
     });
 };
 
-module.exports.verifyToken = verifyToken;
+const _verifyToken = verifyToken;
+export { _verifyToken as verifyToken };

@@ -7,6 +7,7 @@ const cors = require('cors');
 
 const server = http.createServer(app);
 const io = socketio(server);
+require('dotenv').config();
 
 // common middlewire
 app.use(express.json());
@@ -30,22 +31,16 @@ app.get('/', async (req, res, next) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-const verifyToken = async (token) => {
+const verifyToken = (token) => {
     console.log('token: ', token);
-    return new Promise(async (resolve, reject) => {
-        try {
-            const decoded = await jwt.verify(token, process.env.TOKEN_SECRET);
-            if (decoded.isAccessToken === false) {
-                console.log('access denied!');
-                reject('Access Denied! Token is invalid');
-            } else {
-                resolve(decoded);
-            }
-        } catch (err) {
-            console.log(err);
-            reject(err);
-        }
-    });
+
+    const decoded = verify(token, process.env.TOKEN_SECRET);
+    if (decoded.isAccessToken === false) {
+        console.log('access denied!');
+        return 'Access Denied! Token is invalid';
+    } else {
+        return decoded;
+    }
 };
 
 
@@ -53,7 +48,7 @@ io.on('connection', (socket) => {
     //console.log('user connected', socket);
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        if (socket.user)  {
+        if (socket.user) {
             console.log('user disconnected: ', socket.user.email);
             socket.leave(socket.user.email);
             socket.disconnect(true);
@@ -90,7 +85,7 @@ io.on('connection', (socket) => {
     socket.on('token', async (token) => {
         console.log('token');
         try {
-            const user = await verifyToken(token);
+            const user = verifyToken(token);
             socket.user = user;
             console.log(`${user.email} is joining`);
             socket.join(user.email);
@@ -106,9 +101,7 @@ io.on('connection', (socket) => {
 
 // connect db
 const mongoose = require('mongoose');
-require('dotenv/config');
 // for mongoose
-mongoose.set('useFindAndModify', false);
 
 mongoose.connect(
     process.env.DB_CONNECTION,
@@ -121,8 +114,7 @@ mongoose.connect(
     }
 );
 
-require('dotenv/config');
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
     console.log(`app listening at http://localhost:${PORT}`);
 });

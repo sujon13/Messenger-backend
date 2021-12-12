@@ -7,7 +7,7 @@ const save = async (data) => {
         text: data.text,
         from: data.from,
         to: data.to,
-        time: data.time,
+        time: Date.now(),
         status: 'sent'
     });
 
@@ -16,7 +16,7 @@ const save = async (data) => {
         console.log('createdMessage is: ', createdMessage);
 
         // update last message
-        updateLastMessage(data);
+        await updateLastMessage(message);
         return createdMessage;
     } catch(error) {
         console.log(error);
@@ -25,19 +25,21 @@ const save = async (data) => {
 }
 
 const updateLastMessage = async (data) => {
-    const hashId = data.from < data.to 
+    const createMessage = (data) => {
+        const hashId = data.from < data.to 
         ? data.from + '#' + data.to
         : data.to + '#' + data.from;
 
-    const message = new LastMessage({
-        hashId: hashId, 
-        text: data.text,
-        from: data.from,
-        to: data.to,
-        time: data.time,
-        status: 'sent'
-    });
-
+        return new LastMessage({
+            hashId: hashId, 
+            text: data.text,
+            from: data.from,
+            to: data.to,
+            time: Date.now(),
+            status: 'sent'
+        });
+    }
+    
     try {
         const lastMessageList = await LastMessage.find({ hashId: hashId });
         //console.log('lastMessage', lastMessageList);
@@ -51,13 +53,13 @@ const updateLastMessage = async (data) => {
             await lastMessage.save();
             console.log('updated successfuly for hashId: ', hashId);
         } else {
+            const message = createMessage(data);
             await message.save();// create new entry
             console.log('created successfuly for hashId: ', hashId);
         }
     } catch(error) {
         console.log(error);
     }
-
 }
 
 const updateMessageStatus = async (messageId, status) => {
@@ -67,7 +69,7 @@ const updateMessageStatus = async (messageId, status) => {
             return;
         }
         message.status = status;
-        message.save();
+        await message.save();
     } catch(error) {
         console.log(error);
     }
@@ -90,7 +92,6 @@ const getUser = async (email) => {
         console.log(error);
         return null;
     }
-    
 }
 
 const updateUserStatus = async (email, socketId) => {
@@ -102,8 +103,7 @@ const updateUserStatus = async (email, socketId) => {
             await user.save();
         } else {
             console.log('error!');
-        }
-        
+        } 
     } catch(error) {
         console.log(error);
     }
@@ -112,15 +112,14 @@ const updateUserStatus = async (email, socketId) => {
 const isActive = async (email) => {
     try {
         console.log(email);
-        const user = await UserStatus.find({userEmail: email});
+        const users = await UserStatus.find({userEmail: email});
         //console.log(user);
-        if (user.length > 0) {
-            const lastSeen = user[0].lastSeen;
+        if (users.length > 0) {
+            const lastSeen = users[0].lastSeen;
             //console.log(Date.now(), lastSeen);
-            const isActive = Date.now() - lastSeen <= 60*1000;
-            return {
-                isActive: isActive,
-                socketIdList: user[0].socketIdList
+            const isActive = (Date.now() - lastSeen) <= 60 * 1000;
+            return { 
+                isActive: isActive 
             }
         } else {
             console.log('user not found');

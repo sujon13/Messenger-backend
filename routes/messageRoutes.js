@@ -16,7 +16,7 @@ router.get('/messages', async (req, res) => {
                 to: { $in: [from, to] }
             },
             null,
-            { sort: '-time', skip: skip, limit: 30}
+            { sort: '-time', skip: skip, limit: 30 }
         );
         messages.sort(function(a, b) {
             return a.time.getTime() - b.time.getTime();
