@@ -22,7 +22,7 @@ const whiteList = [
 const corsOptions = {
     origin: whiteList
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 //local import
 const { save,  updateUserStatus, isActive } = require('./controllers/messageController');
