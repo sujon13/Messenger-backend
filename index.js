@@ -15,7 +15,8 @@ const whiteList = [
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-      origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com'
+        origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com',
+        credentials: true
     }
 });
 
