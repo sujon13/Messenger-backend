@@ -8,7 +8,8 @@ const cors = require('cors');
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-        origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com'
+        origin: 'http://messenger.sujon13.s3-website.ap-south-1.amazonaws.com',
+        credentials: true
     }
 });
 
@@ -26,7 +27,7 @@ const whiteList = [
 const corsOptions = {
     origin: whiteList
 };
-app.use(cors());
+app.use(cors(whiteList));
 
 //local import
 const { save,  updateUserStatus, isActive } = require('./controllers/messageController');
