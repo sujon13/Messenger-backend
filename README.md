@@ -1,6 +1,6 @@
 This is the backend of my chat application. 
 
-You will frontend [here](https://github.com/sujon13/Messenger).
+You will find frontend [here](https://github.com/sujon13/Messenger).
 
 
  ### Cloning and Running the Application in local ###
